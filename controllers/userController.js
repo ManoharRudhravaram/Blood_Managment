@@ -28,4 +28,35 @@ let registerController = async (req, res) => {
         })
     }
 }
-module.exports={registerController}
+
+let loginController=async(req,res)=>{
+    try {
+        if (!req.body.email || !req.body.password) return res.status(401).send({ message: "All fields are required *" })
+            let findData = await userModel.findOne({ email: req.body.email })
+            if (!findData) return res.status(400).send({ message: "Either email or password is invalid", success: false })
+            //compare password
+            let comparePassword = await bcrypt.compare(req.body.password, findData.password)
+            if (!comparePassword) return res.status(400).send({ message: "Either email or password is invalid", success: false })
+            //create-token
+            let token = await jwt.sign({ userId: findData._id }, process.env.SECRET_KEY, { expiresIn: "20days" })
+            res.status(200).send({ message: "User is Login Successfully", success: true, token, user: findData })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({
+            message: "Somthing Wrong in Login",
+            error,
+            success: false
+        })
+    }
+}
+let getCurrentUserController = async (req, res, next) => {
+    try {
+        let userId = req.userId;
+        let user = await userModel.findOne({ _id: userId })
+        res.status(200).send({ message: "User Get SuccessFully", success: true, user })
+    } catch (error) {
+        console.log(error)
+        res.status(500).send({ message: "Somthing wrong , while fetching current user", success: false, error })
+    }
+}
+module.exports={registerController,loginController,getCurrentUserController}
