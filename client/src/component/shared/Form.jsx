@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import InputType from './InputType'
 import {NavLink} from 'react-router-dom'
+import { handleLoginController, handleRegistrationController } from '../../services/authService'
 
 function Form({ submitText, formTitle, formType }) {
     let [email, setEmail] = useState('')
@@ -10,7 +11,11 @@ function Form({ submitText, formTitle, formType }) {
     let [phone, setPhone] = useState('')
     let [address, setAddress] = useState('')
     let [hospitalName, setHospitalName] = useState('')
-    let [originazation, setOriginazation] = useState('')
+    let [organizationName, setorganizationName] = useState('')
+    function formSubmitHandler(e) {
+        if (formType === "login") return handleLoginController(e,email,password,role)
+        else if (formType === "register") return handleRegistrationController(e,email,password,name,role,phone,address,hospitalName,organizationName)
+    }
     return (
 
         <form>
@@ -31,8 +36,8 @@ function Form({ submitText, formTitle, formType }) {
                     <label class="form-check-label" for="hospital">Hospital</label>
                 </div>
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="role" id="originazation" value="originazation" onChange={(e) => setRole(e.target.value)} />
-                    <label class="form-check-label" for="originazation">Originazation</label>
+                    <input class="form-check-input" type="radio" name="role" id="organizationName" value="organizationName" onChange={(e) => setRole(e.target.value)} />
+                    <label class="form-check-label" for="organizationName">organizationName</label>
                 </div>
             </div>
             {(() => {
@@ -56,9 +61,9 @@ function Form({ submitText, formTitle, formType }) {
                                 {/* //hospitalname */}
                                 {(role === "hospital") && (
                                     <InputType inputType="text" labelText="Hospital Name" value={hospitalName} onChange={(e) => setHospitalName(e.target.value)} name="hospitalName" labelFor="hospitalName" />)}
-                                {/* {originazationName} */}
-                                {(role === "originazation") && (
-                                    <InputType inputType="text" labelText="Originazation Name" value={originazation} onChange={(e) => setOriginazation(e.target.value)} name="originazation" labelFor="originazation" />)}
+                                {/* {organizationNameName} */}
+                                {(role === "organizationName") && (
+                                    <InputType inputType="text" labelText="organizationName Name" value={organizationName} onChange={(e) => setorganizationName(e.target.value)} name="organizationName" labelFor="organizationName" />)}
                                 {/* email */}
                                 <InputType inputType="text" labelText="Email" value={email} onChange={(e) => setEmail(e.target.value)} name="email" labelFor="email" />
                                 {/* password */}
@@ -75,7 +80,7 @@ function Form({ submitText, formTitle, formType }) {
             {formType === "login" && <> Not registered yet ? Register <NavLink to="/register">Here !</NavLink></>}
             {formType === "register" && <>  Already Register ?  Login <NavLink to="/login">Here !</NavLink></>}
             <br />
-            <button type="submit" className="btn btn-primary">{submitText}</button>
+            <button type="submit" className="btn btn-primary" onClick={formSubmitHandler}>{submitText}</button>
         </form>
     )
 }

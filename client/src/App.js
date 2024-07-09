@@ -1,22 +1,31 @@
 import React from 'react'
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import HomePage from './pages/HomePage';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Route, Routes } from 'react-router-dom';
+import PublicRoute from './component/Routes/PublicRoute';
 function App() {
-  let routes = createBrowserRouter([{
-    path: "/",
-    element: <HomePage />,
-    children:[ {
-      path: "login",
-      element: <Login />
-    }, {
-      path: "register",
-      element: <Register />
-    }]
-  }])
+ 
   return (
-    <RouterProvider router={routes}></RouterProvider>
+    <>
+    <ToastContainer />
+    <Routes>
+      <Route path='/' element={<HomePage/>}/>
+      <Route path='/login' element={
+        <PublicRoute>
+          <Login />
+        </PublicRoute>
+
+      } />
+      <Route path='/register' element={
+        <PublicRoute>
+          <Register />
+        </PublicRoute>
+      } />
+    </Routes>
+  </>
   )
 }
 
